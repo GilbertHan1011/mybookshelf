@@ -136,8 +136,10 @@ export class BookDetails extends ScopedElementsMixin(LitElement) {
         if (!this.updateBook) {
             return;
         }
-
-        const success = await this.updateBook(this.bookFromInput())
+ 
+        const bookData = this.bookFromInput();
+        console.log('Book Data:', bookData); // Log the book data before sending
+        const success = await this.updateBook(bookData);
         if (success) {
             this.close();
         }
@@ -209,7 +211,7 @@ export class BookDetails extends ScopedElementsMixin(LitElement) {
             <div class="review"><textarea placeholder="My review" id="review">${this.book.review}</textarea></div>
             <div class="actions">
                 <action-button @click=${this.save}>OK</action-button>
-                <action-button @click=${this.close}>Mégsem</action-button>
+                <action-button @click=${this.close}>Cancel</action-button>
             </div>
         `
     }

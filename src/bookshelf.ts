@@ -28,6 +28,14 @@ export default class Bookshelf extends ScopedElementsMixin(LitElement) {
         box-shadow: rgb(0 0 0) 0px 0px 25px -4px inset;
         align-items: flex-end;
     }
+    .title {
+        width: 100%;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 20px;
+    }
     :host > div, new-book {
         border-bottom: 8px solid rgb(119 63 21);
         min-height: 180px;
@@ -53,15 +61,13 @@ export default class Bookshelf extends ScopedElementsMixin(LitElement) {
         width: 100%;
         justify-content: center;
     }
-
-    .filter-buttons action-button {
-        margin: 5px;
+    .filter {
+        margin-bottom: 20px;
     }
-
-    .filter-buttons .active {
-        background-color: #007bff;
-        color: white;
-    }  
+    select {
+        padding: 5px;
+        font-size: 16px;
+    }
   `;
     @property({ type: Array }) private _booksData: Book[] = [];
     @property({ type: Array }) private _filteredBooks: Book[] = [];
@@ -108,6 +114,12 @@ export default class Bookshelf extends ScopedElementsMixin(LitElement) {
         const response = await fetch('api');
         return response.status >= 200  && response.status < 300;
     }
+
+    handleCategoryChange(event: Event) {
+        const radioElement = event.target as HTMLInputElement;
+        const selectedCategory = radioElement.value;
+        this.filterBooksByCategory(selectedCategory);
+    }
     filterBooksByCategory(category: string) {
         this._selectedCategory = category;
         if (category === 'All') {
@@ -138,10 +150,10 @@ export default class Bookshelf extends ScopedElementsMixin(LitElement) {
         return false;
     }
 
-    updateBook = async (book:Book):Promise<boolean> => {
+    updateBook = async (book: Book): Promise<boolean> => {
         let newData: Book[];
         let response: Response;
-
+ 
         if (book.id !== "") {
             newData = this._booksData.map(bookT => bookT.id === book.id ? book : bookT);
             response = await fetch(`api/book/${book.id}`, {
@@ -157,7 +169,7 @@ export default class Bookshelf extends ScopedElementsMixin(LitElement) {
             book.id = crypto.randomUUID();
             book.dateAdded = new Date().toISOString();
             newData.unshift(book);
-
+ 
             response = await fetch(`api/book/`, {
                 method: 'POST',
                 headers: {
@@ -167,11 +179,12 @@ export default class Bookshelf extends ScopedElementsMixin(LitElement) {
                 body: JSON.stringify(book)
             });
         }
-
+ 
+        console.log('Response Status:', response.status); // Log the response status
         if (response.status >= 200 && response.status < 300) {
             this._booksData = newData;
             return true;
-        } 
+        }
         return false;
     }
 
@@ -182,22 +195,20 @@ export default class Bookshelf extends ScopedElementsMixin(LitElement) {
 
     render() {
         return html`
-            <div class="filter-buttons">
+            <div class="title">GilbertHan's bookshelf</div>
+            <div class="filter">
                 ${this.categories.map(category => html`
-                    <action-button 
-                        @click=${() => this.filterBooksByCategory(category)}
-                        class=${this._selectedCategory === category ? 'active' : ''}
-                    >
+                    <label>
+                        <input type="radio" name="category" value=${category} @change=${this.handleCategoryChange} ?checked=${this._selectedCategory === category}>
                         ${category}
-                    </action-button>
+                    </label>
                 `)}
             </div>
             <div class="books">
                 ${this._filteredBooks.map(book => html`
-                    <x-book .book=${book} .updateBook=${this.updateBook} .deleteBook=${this.deleteBook}></x-book>
+                    <book-card .book=${book} .updateBook=${this.updateBook} .deleteBook=${this.deleteBook}></book-card>
                 `)}
             </div>
-            <new-book .updateBook=${this.updateBook}></new-book>
         `;
     }
 }
