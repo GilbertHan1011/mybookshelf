@@ -112,7 +112,7 @@ function t(t,e,i,o){var s,r=arguments.length,n=r<3?e:null===o?o=Object.getOwnPro
         .wrap {
             position: fixed;
             z-index: 1;
-            inset: 0px;
+            inset: 100px 0px auto 0px; /* Adjusted to prevent touching the top */
             display: flex;
             border: 0px;
             justify-content: center;
@@ -125,7 +125,7 @@ function t(t,e,i,o){var s,r=arguments.length,n=r<3?e:null===o?o=Object.getOwnPro
             line-height: 1.4;
             padding: 32px;
             width: 600px;
-
+            height: auto; /* Changed to auto to fit content */
             display: flex;
             flex-direction: column;
             align-items: flex-start;

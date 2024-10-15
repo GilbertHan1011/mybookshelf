@@ -21,13 +21,21 @@ export class BookDetails extends ScopedElementsMixin(LitElement) {
 
 
     static styles = css`
+        :host {
+            --book-details-padding-top: 20px;
+        }
+
         .wrap {
-            position: fixed;
-            z-index: 1;
-            inset: 0px;
+            position: fixed !important;
+            z-index: 1000 !important;
+            inset: 100px 0px auto 0px; 
             display: flex;
             border: 0px;
             justify-content: center;
+            align-items: flex-start !important;
+            background-color: rgba(0, 0, 0, 0.5) !important;
+            padding-top: var(--book-details-padding-top) !important;
+            overflow-y: auto;
         }
 
         .details {
@@ -37,19 +45,26 @@ export class BookDetails extends ScopedElementsMixin(LitElement) {
             line-height: 1.4;
             padding: 32px;
             width: 600px;
-
+            height: auto;
+            max-width: 90%;
+            max-height: calc(100vh - var(--book-details-padding-top) - 50px);
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 16px;
+            gap: 12px;
             overflow: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 20000px !important;
         }
 
         .info {
             display: flex;
             gap: 24px;
             flex-wrap: wrap;
+            padding-top: 2000px !important;
         }
+
 
         .cover {
             box-shadow: 
